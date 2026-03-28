@@ -1,0 +1,49 @@
+@use "@/styles/index" as *;
+
+.userButton {
+  user-select: none;
+  padding: 10px 15px;
+  border: unset;
+  background-color: unset;
+  width: 100%;
+  cursor: pointer;
+  &.active {
+    background-color: $hoverDark;
+  }
+  &:hover,
+  .active {
+    background-color: $hoverDark;
+  }
+  &.collapsed {
+    padding: 10px 0;
+    @include center;
+    .icon,
+    .userInfo {
+      display: none;
+    }
+  }
+
+  .flexbox {
+    @include flexbox(row, center, space-between);
+  }
+
+  .userContainer {
+    @include flexbox(row, center, center, 12px);
+  }
+
+  .userInfo {
+    @include flexbox(column, start, center, 4px);
+  }
+
+  .userName {
+    @include font(0.8rem, $color: $textColor);
+  }
+
+  .userPlan {
+    @include font(0.7rem, 700, $color: $textColorDarker);
+  }
+
+  .icon {
+    color: $textColor;
+  }
+}

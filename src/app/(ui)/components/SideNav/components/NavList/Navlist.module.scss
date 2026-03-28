@@ -1,0 +1,50 @@
+@use "@/styles/index" as *;
+.container {
+  padding: 0 5px;
+  width: inherit;
+
+  &.collapsed {
+    .list {
+      @include flexbox(column, center, center, $gap: 8px);
+    }
+  }
+  .list {
+    @include flexbox(column, $gap: 8px);
+    user-select: none;
+
+    .icon {
+      padding-left: 2px;
+    }
+
+    .addItem {
+      &:hover {
+        .addButton::before {
+          background-color: #fff;
+        }
+      }
+      .addButton {
+        position: relative;
+        color: $darkbutton;
+        border-radius: 50%;
+        z-index: 1;
+        @include flexbox(row, center, start);
+        &::before {
+          content: "";
+          transition: background-color 0.2s ease;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 50%;
+          height: 50%;
+          background-color: $textColor;
+          border-radius: 50%;
+          z-index: -1;
+        }
+        .addIcon {
+          @include font(1.2rem);
+        }
+      }
+    }
+  }
+}

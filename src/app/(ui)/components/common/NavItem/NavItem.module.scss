@@ -1,0 +1,33 @@
+@use "@/styles/index" as *;
+
+.container {
+  color: $textColor;
+  padding: 10px 0;
+  margin-right: 5px;
+  transition: background-color 0.1s ease;
+  border-radius: 10px;
+  width: 100%;
+  background-color: unset;
+  border: none;
+  cursor: pointer;
+  &.collapsed {
+    margin-right: unset;
+    width: 35px;
+    display: grid;
+    place-items: center;
+    .flexbox {
+      padding: 0;
+    }
+  }
+  &:hover {
+    background-color: $hoverDark;
+  }
+  .flexbox {
+    padding: 0 10px;
+    @include flexbox(row, center, $gap: 8px);
+    .label {
+      @include font(0.9rem);
+      padding-top: 2px;
+    }
+  }
+}

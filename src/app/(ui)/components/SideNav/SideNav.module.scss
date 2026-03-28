@@ -1,0 +1,62 @@
+@use "@/styles/index" as *;
+
+.container {
+  max-width: $expandedSidenavWidth;
+  position: relative;
+  box-shadow: 0.2px 0 0 0 $borderColor;
+  overflow: hidden;
+  transition: max-width 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+  width: 100%;
+  &.collapsed {
+    max-width: $collapsedSidenavWidth;
+    .wrapper {
+      .flexbox {
+        padding: 10px 0;
+        @include center();
+        .logoname {
+          display: none;
+        }
+      }
+    }
+  }
+  .wrapper {
+    .flexbox {
+      padding: 10px 15px;
+      @include flexbox(row, center, space-between);
+      .logoname {
+        @include font(1.2rem, bold, $color: $textColor);
+        letter-spacing: 3px;
+      }
+      .button {
+        background-color: unset;
+        outline-width: 0;
+        box-shadow: unset;
+        border-radius: 10px;
+        padding: 8px 10px;
+        border: none;
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+        @include center;
+        &:hover {
+          background-color: $hoverDark;
+        }
+
+        .expandIcon {
+          color: $textColor;
+          height: 22px;
+          width: 22px;
+        }
+      }
+    }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -0.2px 0 0 $borderColor;
+    &.collapsed {
+      @include center;
+    }
+  }
+}

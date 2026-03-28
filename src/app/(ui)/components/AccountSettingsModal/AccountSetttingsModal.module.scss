@@ -1,0 +1,20 @@
+@use "@/styles/index" as *;
+
+.container {
+  position: fixed;
+  background-color: $inputBgColor;
+  width: calc($expandedSidenavWidth - 14px);
+  border-radius: 10px;
+  box-shadow: 0 0 0 0.6px $borderColor;
+  padding: 8px 5px;
+
+  .userEmail {
+    padding: 0 5px;
+    @include font(0.7rem, $color: $textColorDarker);
+  }
+  .list {
+    padding-top: 10px;
+    @include flexbox(column, start, start, 8px);
+    width: 100%;
+  }
+}

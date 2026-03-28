@@ -1,0 +1,17 @@
+@use "@/styles/index" as *;
+
+.container {
+  width: 36px;
+  aspect-ratio: 1/1;
+  background-color: $textColor;
+  border-radius: 50%;
+  @include center;
+
+  .label {
+    @include font(1rem, null, $color: $backgroundMain);
+  }
+
+  .icon {
+    @include font(1.4rem, bold, $color: $backgroundMain);
+  }
+}

@@ -1,0 +1,15 @@
+@use "@/styles/index" as *;
+
+.container {
+  display: grid;
+  width: 100%;
+  height: inherit;
+  @include flexbox(row, start, center);
+  .chatArea{
+    width: 100%; 
+    max-width: 1200px;
+    padding: 10px;
+    @include  flexbox(row, start, center);
+    height: inherit;
+  }
+}
