@@ -9,14 +9,22 @@ import { NavList } from "./components/NavList/Navlist";
 import { UserButton } from "./components/NavList/UserButton/UserButton";
 import css from "./SideNav.module.scss";
 
-interface SideNavProps {
-  sessionData: DefaultSession["user"];
+interface Conversation {
+  id: string;
+  title: string;
+  updated_at: string;
 }
 
-export const SideNav = ({ sessionData }: SideNavProps) => {
+interface SideNavProps {
+  sessionData: DefaultSession["user"];
+  conversations: Conversation[];
+}
+
+export const SideNav = ({ sessionData, conversations }: SideNavProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [openAccSettings, setOpenAccSettings] = useState<boolean>(false);
   const [footerEl, setFooterEl] = useState<HTMLDivElement | null>(null);
+
 
   return (
     <aside
@@ -34,7 +42,7 @@ export const SideNav = ({ sessionData }: SideNavProps) => {
             <RxPanelLeft className={css.expandIcon} />
           </button>
         </div>
-        <NavList collapsed={collapsed} />
+        <NavList collapsed={collapsed} conversations={conversations} />
       </div>
       <div
         ref={setFooterEl}
@@ -53,12 +61,6 @@ export const SideNav = ({ sessionData }: SideNavProps) => {
           onClick={() => setOpenAccSettings((prev) => !prev)}
           active={openAccSettings}
         />
-        {/* <div>{sessionData?.name}</div>
-        <form action={logout}>
-          <button type="submit" className={css.logoutButton}>
-            Sign out
-          </button>
-        </form> */}
       </div>
     </aside>
   );
