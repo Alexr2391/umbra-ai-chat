@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { BsPaperclip } from "react-icons/bs";
 import { BsArrowUp } from "react-icons/bs";
 import { HINTS } from "@/app/(ui)/components/Chatboard/constants";
@@ -9,7 +9,7 @@ import css from "./ChatInput.module.scss";
 interface ChatInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onSend: () => void;
+  onSend: (anchor: HTMLTextAreaElement | null) => void;
   placeholder: string;
   disabled?: boolean;
   isActive: boolean;
@@ -28,7 +28,7 @@ export const ChatInput = ({
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      onSend();
+      onSend(textareaRef.current);
     }
   }
 
@@ -73,7 +73,7 @@ export const ChatInput = ({
             className={`${css.sendBtn}${isActive ? ` ${css.active}` : ""}`}
             type="button"
             aria-label="Send message"
-            onClick={onSend}
+            onClick={() => onSend(textareaRef.current)}
             disabled={!isActive}
           >
             <BsArrowUp className={css.sendIcon} />

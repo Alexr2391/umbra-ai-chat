@@ -1,6 +1,6 @@
 export const PLACEHOLDERS = {
-  REPLY: "Reply...",
-  NEW_CHAT: "Ask me anything...",
+  REPLY: "Summon your request...",
+  NEW_CHAT: "Ask me at your own peril...",
 } as const;
 
 export const HINTS = {
