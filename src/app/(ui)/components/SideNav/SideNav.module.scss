@@ -20,6 +20,9 @@
     }
   }
   .wrapper {
+    @include flexbox(column);
+    height: calc(100% - 60px); // leave room for footer
+    overflow: hidden;
     .flexbox {
       padding: 10px 15px;
       @include flexbox(row, center, space-between);

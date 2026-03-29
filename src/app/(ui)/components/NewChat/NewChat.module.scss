@@ -1,0 +1,20 @@
+@use "@/styles/index" as *;
+
+.container {
+  @include flexbox(column, center, center);
+  width: 100%;
+  max-width: 760px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.greeting {
+  @include font(2rem, 600, null, 1.2, $textColor);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  @include font(1rem, normal, null, 1.6, rgba($textColorDarker, 0.6));
+  margin-bottom: 32px;
+}
