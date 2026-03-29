@@ -34,7 +34,7 @@ export const NewChat = ({ userName }: NewChatProps) => {
   return (
     <div className={css.container}>
       <h1 className={css.greeting}>Hello, {firstName}</h1>
-      <p className={css.subtitle}>How can I help you today?</p>
+      <p className={css.subtitle}>What do you want? Speak quickly... I have hexes to brew.</p>
       <ChatInput
         value={value}
         onChange={(e) => setValue(e.target.value)}

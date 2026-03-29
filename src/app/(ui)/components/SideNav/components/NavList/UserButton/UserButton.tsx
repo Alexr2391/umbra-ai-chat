@@ -30,7 +30,7 @@ export const UserButton = ({
           <Avatar name={sessionData?.name} />
           <div className={css.userInfo}>
             <div className={css.userName}>{sessionData?.name}</div>
-            <div className={css.userPlan}>Free Pan</div>
+            <div className={css.userPlan}>Free Plan</div>
           </div>
         </div>
         <RiExpandVerticalLine className={css.icon} />

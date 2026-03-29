@@ -32,11 +32,11 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
     firstMessage,
   });
 
-  function handleSend() {
+  function handleSend(inputAnchor: HTMLTextAreaElement | null) {
     const text = value.trim();
     if (!text || isStreaming) return;
     setValue("");
-    send(text);
+    send(text, inputAnchor);
   }
 
   return (
