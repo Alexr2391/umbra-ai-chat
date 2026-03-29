@@ -22,6 +22,7 @@ export function useChat(
   const abortRef = useRef<AbortController | null>(null);
   const nextSeqRef = useRef(initialMessages.length);
   const autoSentRef = useRef(false);
+  const inputAnchorRef = useRef<HTMLTextAreaElement | null>(null);
 
   async function streamFromApi(text: string, history: Message[], assistantSeq: number) {
     setIsStreaming(true);
@@ -84,8 +85,16 @@ export function useChat(
     }
   }
 
-  async function send(text: string, skipUserSave = false) {
+  useEffect(() => {
+    if (!isStreaming && inputAnchorRef.current) {
+      inputAnchorRef.current.focus();
+    }
+  }, [isStreaming]);
+
+  async function send(text: string, inputAnchor?: HTMLTextAreaElement | null, skipUserSave = false) {
     if (!text.trim() || isStreaming) return;
+
+    if (inputAnchor) inputAnchorRef.current = inputAnchor;
 
     const userSeq = nextSeqRef.current;
     const assistantSeq = userSeq + 1;
@@ -94,7 +103,7 @@ export function useChat(
     const history = messages.filter((m) => m.content !== "");
 
     if (conversationId && !skipUserSave) {
-      await saveMessage(conversationId,ROLES.USER, text, userSeq);
+      await saveMessage(conversationId, ROLES.USER, text, userSeq);
     }
 
     setMessages((prev) => [
