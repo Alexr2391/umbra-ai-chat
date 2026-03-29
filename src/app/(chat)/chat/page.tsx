@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import css from "./page.module.scss";
-import { ChatBoard } from "@/app/(ui)/components/Chatboard/ChatBoard";
+import { NewChat } from "@/app/(ui)/components/NewChat/NewChat";
 
 export default async function ChatPage() {
   const session = await auth();
@@ -8,9 +8,9 @@ export default async function ChatPage() {
   if (!session?.user) return null;
 
   return (
-    <section className={css.container} >
+    <section className={css.container}>
       <div className={css.chatArea}>
-      <ChatBoard />
+        <NewChat userName={session.user.name} />
       </div>
     </section>
   );

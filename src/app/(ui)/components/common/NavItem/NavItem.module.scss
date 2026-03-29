@@ -2,6 +2,7 @@
 
 .container {
   color: $textColor;
+  text-decoration: none;
   padding: 10px 0;
   margin-right: 5px;
   transition: background-color 0.1s ease;
@@ -20,6 +21,9 @@
     }
   }
   &:hover {
+    background-color: $hoverDark;
+  }
+  &.active {
     background-color: $hoverDark;
   }
   .flexbox {

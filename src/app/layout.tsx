@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { auth } from "@/auth";
 import { SideNav } from "@/app/(ui)/components/SideNav/SideNav";
+import { getConversations } from "@/app/actions";
 import "../styles/global.scss";
 import styles from "./layout.module.scss";
 
@@ -23,11 +24,12 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const user = session?.user ?? null;
+  const conversations = user ? await getConversations() : [];
 
   return (
     <html lang="en" className={`${roboto.variable}`}>
       <body className={`${roboto.className} ${styles.body}`}>
-        {user && <SideNav sessionData={user} />}
+        {user && <SideNav sessionData={user} conversations={conversations} />}
         <main className={styles.main}>{children}</main>
       </body>
     </html>
