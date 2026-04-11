@@ -115,3 +115,77 @@
   @include font(0.75rem, normal, null, null, rgba($textColorDarker, 0.35));
   text-align: center;
 }
+
+.hiddenInput {
+  display: none;
+}
+
+.imagePreview {
+  @include flexbox(row, center, flex-start, 8px);
+  padding: 6px 12px 0;
+  position: relative;
+}
+
+.thumbnail {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba($borderColor, 0.15);
+}
+
+.removeBtn {
+  @include center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba($borderColor, 0.15);
+  color: $textColorDarker;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.3);
+    color: $textColor;
+  }
+}
+
+.modalOverlay {
+  @include center;
+  @include position(fixed, 0, 0, 0, 0);
+  background-color: rgba(#000, 0.6);
+  z-index: 100;
+}
+
+.modal {
+  @include flexbox(column, stretch, center, 20px);
+  background-color: $inputBgColor;
+  border: 1px solid rgba($borderColor, 0.2);
+  border-radius: 12px;
+  padding: 28px 32px;
+  max-width: 360px;
+  width: 90%;
+}
+
+.modalMessage {
+  @include font(0.9375rem, normal, null, 1.5, $textColor);
+  text-align: center;
+}
+
+.modalBtn {
+  align-self: center;
+  padding: 8px 24px;
+  border-radius: 8px;
+  border: 1px solid rgba($borderColor, 0.2);
+  background-color: $darkbutton;
+  color: $textColor;
+  @include font(0.875rem, normal);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.12);
+  }
+}

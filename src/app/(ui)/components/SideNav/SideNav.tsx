@@ -5,6 +5,7 @@ import type { DefaultSession } from "next-auth";
 import { useState } from "react";
 import { RxPanelLeft } from "react-icons/rx";
 import { AccountSettingsModal } from "../AccountSettingsModal/AccountSettingsModal";
+import { PersonalizationModal } from "../PersonalizationModal/PersonalizationModal";
 import { NavList } from "./components/NavList/Navlist";
 import { UserButton } from "./components/NavList/UserButton/UserButton";
 import css from "./SideNav.module.scss";
@@ -23,6 +24,7 @@ interface SideNavProps {
 export const SideNav = ({ sessionData, conversations }: SideNavProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [openAccSettings, setOpenAccSettings] = useState<boolean>(false);
+  const [openPersonalization, setOpenPersonalization] = useState(false);
   const [footerEl, setFooterEl] = useState<HTMLDivElement | null>(null);
 
 
@@ -53,7 +55,14 @@ export const SideNav = ({ sessionData, conversations }: SideNavProps) => {
             onClose={() => setOpenAccSettings(false)}
             userEmail={sessionData?.email}
             anchor={footerEl}
+            onPersonalizeClick={() => {
+              setOpenAccSettings(false);
+              setOpenPersonalization(true);
+            }}
           />
+        )}
+        {openPersonalization && (
+          <PersonalizationModal onClose={() => setOpenPersonalization(false)} />
         )}
         <UserButton
           sessionData={sessionData}

@@ -1,0 +1,218 @@
+@use "@/styles/index" as *;
+
+.overlay {
+  @include center;
+  @include position(fixed, 0, 0, 0, 0);
+  background-color: rgba(#000, 0.65);
+  z-index: 200;
+}
+
+.modal {
+  @include flexbox(column, stretch, flex-start, 0);
+  background-color: $inputBgColor;
+  border: 1px solid rgba($borderColor, 0.18);
+  border-radius: 14px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.header {
+  @include flexbox(row, center, space-between);
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba($borderColor, 0.1);
+  flex-shrink: 0;
+}
+
+.title {
+  @include font(1rem, 600, null, null, $textColor);
+  margin: 0;
+}
+
+.closeBtn {
+  @include center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: rgba($textColorDarker, 0.6);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.1);
+    color: $textColor;
+  }
+}
+
+.body {
+  @include flexbox(column, stretch, flex-start, 24px);
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba($borderColor, 0.15);
+    border-radius: 4px;
+  }
+}
+
+.loading {
+  padding: 40px 24px;
+  @include font(0.875rem, normal, null, null, rgba($textColorDarker, 0.5));
+  text-align: center;
+}
+
+.section {
+  @include flexbox(column, stretch, flex-start, 6px);
+}
+
+.label {
+  @include font(0.8125rem, 600, null, null, $textColor);
+  letter-spacing: 0.02em;
+}
+
+.hint {
+  @include font(0.75rem, normal, null, 1.5, rgba($textColorDarker, 0.5));
+  margin: 0 0 4px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: rgba($backgroundMain, 0.6);
+  border: 1px solid rgba($borderColor, 0.15);
+  border-radius: 8px;
+  resize: vertical;
+  @include font(0.875rem, normal, null, 1.6, $textColor);
+  caret-color: $textColor;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: rgba($textColorDarker, 0.35);
+  }
+
+  &:focus {
+    border-color: rgba($borderColor, 0.35);
+  }
+}
+
+.memoList {
+  @include flexbox(column, stretch, flex-start, 8px);
+}
+
+.memoRow {
+  @include flexbox(row, center, flex-start, 6px);
+}
+
+.memoInput {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: rgba($backgroundMain, 0.6);
+  border: 1px solid rgba($borderColor, 0.15);
+  border-radius: 8px;
+  @include font(0.875rem, normal, null, 1.5, $textColor);
+  caret-color: $textColor;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: rgba($textColorDarker, 0.35);
+  }
+
+  &:focus {
+    border-color: rgba($borderColor, 0.35);
+  }
+}
+
+.removeMemoBtn {
+  @include center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: rgba($textColorDarker, 0.5);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.1);
+    color: $textColor;
+  }
+}
+
+.addMemoBtn {
+  @include flexbox(row, center, flex-start, 4px);
+  align-self: flex-start;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px dashed rgba($borderColor, 0.2);
+  background: transparent;
+  color: rgba($textColorDarker, 0.6);
+  @include font(0.8125rem, normal);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: rgba($borderColor, 0.4);
+    color: $textColor;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.footer {
+  @include flexbox(row, center, flex-end, 8px);
+  padding: 16px 24px;
+  border-top: 1px solid rgba($borderColor, 0.1);
+  flex-shrink: 0;
+}
+
+.cancelBtn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba($borderColor, 0.2);
+  background: transparent;
+  color: rgba($textColorDarker, 0.7);
+  @include font(0.875rem, normal);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.08);
+    color: $textColor;
+  }
+}
+
+.saveBtn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: $textColor;
+  color: $backgroundMain;
+  @include font(0.875rem, 600);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($textColor, 0.85);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

@@ -127,6 +127,15 @@
   }
 }
 
+.messageImage {
+  display: block;
+  max-width: 200px;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid rgba($borderColor, 0.15);
+}
+
 .thinking {
   max-width: 760px;
   width: 100%;

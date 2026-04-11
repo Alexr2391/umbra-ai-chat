@@ -6,14 +6,13 @@ import css from "../page.module.scss";
 
 interface ConversationPageProps {
   params: Promise<{ conversationId: string }>;
-  searchParams: Promise<{ first?: string }>;
 }
 
-export default async function ConversationPage({ params, searchParams }: ConversationPageProps) {
+export default async function ConversationPage({ params }: ConversationPageProps) {
   const session = await auth();
   if (!session?.user) return null;
 
-  const [{ conversationId }, { first }] = await Promise.all([params, searchParams]);
+  const { conversationId } = await params;
   const [conversation, messages] = await Promise.all([
     getConversation(conversationId),
     getConversationMessages(conversationId),
@@ -27,7 +26,6 @@ export default async function ConversationPage({ params, searchParams }: Convers
         <ChatBoard
           conversationId={conversationId}
           initialMessages={messages}
-          firstMessage={messages.length === 0 ? first : undefined}
         />
       </div>
     </section>

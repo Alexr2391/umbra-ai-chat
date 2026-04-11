@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { ChatInput } from "@/app/(ui)/components/common/ChatInput/ChatInput";
 import { PLACEHOLDERS } from "./constants";
 import { MessageList } from "./MessageList";
@@ -11,32 +10,25 @@ import css from "./ChatBoard.module.scss";
 interface ChatBoardProps {
   conversationId: string;
   initialMessages?: import("./useChat").Message[];
-  firstMessage?: string;
 }
 
-export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }: ChatBoardProps) => {
+export const ChatBoard = ({ conversationId, initialMessages = [] }: ChatBoardProps) => {
   const [value, setValue] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const pathname = usePathname();
 
-  useEffect(() => {
-    if (firstMessage) {
-      router.replace(pathname);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const { messages, isStreaming, lastIsEmpty, send } = useChat(messagesEndRef, {
+  const { messages, isStreaming, isProcessingImage, lastIsEmpty, send } = useChat(messagesEndRef, {
     conversationId,
     initialMessages,
-    firstMessage,
   });
 
   function handleSend(inputAnchor: HTMLTextAreaElement | null) {
     const text = value.trim();
     if (!text || isStreaming) return;
+    const currentImage = image;
     setValue("");
-    send(text, inputAnchor);
+    setImage(null);
+    send(text, inputAnchor, currentImage ?? undefined);
   }
 
   return (
@@ -44,6 +36,7 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
       <MessageList
         messages={messages}
         isStreaming={isStreaming}
+        isProcessingImage={isProcessingImage}
         lastIsEmpty={lastIsEmpty}
         messagesEndRef={messagesEndRef}
       />
@@ -54,6 +47,9 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
         placeholder={PLACEHOLDERS.REPLY}
         isActive={value.trim().length > 0 && !isStreaming}
         disabled={isStreaming}
+        image={image}
+        onImageAttach={setImage}
+        onImageRemove={() => setImage(null)}
       />
     </div>
   );
