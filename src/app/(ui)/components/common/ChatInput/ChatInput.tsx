@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, type RefObject } from "react";
-import { BsPaperclip } from "react-icons/bs";
-import { BsArrowUp } from "react-icons/bs";
 import { HINTS } from "@/app/(ui)/components/Chatboard/constants";
+import { useEffect, useRef } from "react";
+import { BsArrowUp, BsPaperclip } from "react-icons/bs";
 import css from "./ChatInput.module.scss";
 
 interface ChatInputProps {
@@ -41,7 +40,6 @@ export const ChatInput = ({
     onChange(e);
   }
 
-  // reset height when value is cleared after send
   useEffect(() => {
     if (value === "" && textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -64,7 +62,11 @@ export const ChatInput = ({
 
         <div className={css.toolbar}>
           <div className={css.toolsLeft}>
-            <button className={css.iconBtn} type="button" aria-label="Attach file">
+            <button
+              className={css.iconBtn}
+              type="button"
+              aria-label="Attach file"
+            >
               <BsPaperclip className={css.icon} />
             </button>
           </div>

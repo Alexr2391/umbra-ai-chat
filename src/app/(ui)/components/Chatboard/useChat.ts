@@ -85,12 +85,6 @@ export function useChat(
     }
   }
 
-  useEffect(() => {
-    if (!isStreaming && inputAnchorRef.current) {
-      inputAnchorRef.current.focus();
-    }
-  }, [isStreaming]);
-
   async function send(text: string, inputAnchor?: HTMLTextAreaElement | null, skipUserSave = false) {
     if (!text.trim() || isStreaming) return;
 
@@ -113,6 +107,7 @@ export function useChat(
     ]);
 
     await streamFromApi(text, history, assistantSeq);
+    inputAnchorRef.current?.focus();
   }
 
   useEffect(() => {
