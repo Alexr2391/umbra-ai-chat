@@ -30,9 +30,9 @@ export const PersonalizationModal = ({ onClose }: PersonalizationModalProps) => 
 
   async function handleSave() {
     setIsSaving(true);
-    await saveUserPreferences({ personalInfo, agentTone, memos });
+    const ok = await saveUserPreferences({ personalInfo, agentTone, memos });
     setIsSaving(false);
-    onClose();
+    if (ok) onClose();
   }
 
   function addMemo() {
