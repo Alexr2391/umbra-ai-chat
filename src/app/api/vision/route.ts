@@ -13,22 +13,37 @@ const EXTRACTION_PROMPT = `Analyze this image in detail. Extract and describe:
 Be comprehensive and precise — this description will serve as the sole text reference for follow-up questions about this image.`;
 
 export async function POST(req: NextRequest) {
-  const { imageDataUrl } = await req.json();
+  try {
+    const { imageDataUrl } = await req.json();
 
-  const response = await groq.chat.completions.create({
-    model: VISION_MODEL,
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: EXTRACTION_PROMPT },
-          { type: "image_url", image_url: { url: imageDataUrl } },
-        ],
-      },
-    ],
-    max_tokens: 1024,
-  });
+    if (!imageDataUrl) {
+      return new Response(JSON.stringify({ error: "Missing imageDataUrl" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-  const summary = response.choices[0]?.message?.content ?? "";
-  return Response.json({ summary });
+    const response = await groq.chat.completions.create({
+      model: VISION_MODEL,
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: EXTRACTION_PROMPT },
+            { type: "image_url", image_url: { url: imageDataUrl } },
+          ],
+        },
+      ],
+      max_tokens: 1024,
+    });
+
+    const summary = response.choices[0]?.message?.content ?? "";
+    return Response.json({ summary });
+  } catch (err) {
+    console.error("[vision] POST failed:", err);
+    return new Response(JSON.stringify({ error: "Failed to analyze image" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }
