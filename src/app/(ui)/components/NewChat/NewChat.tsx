@@ -23,19 +23,21 @@ export const NewChat = ({ userName }: NewChatProps) => {
     const text = value.trim();
     if (!text || isLoading) return;
     setIsLoading(true);
-    try {
-      sessionStorage.setItem("pending_first_message", text);
-      if (image) {
-        sessionStorage.setItem(PENDING_IMAGE_KEY, image);
-      }
-      const conversationId = await createConversation(text);
-      router.push(`/chat/${conversationId}`);
-    } catch (err) {
-      console.error("Failed to create conversation:", err);
+    sessionStorage.setItem("pending_first_message", text);
+    if (image) {
+      sessionStorage.setItem(PENDING_IMAGE_KEY, image);
+    }
+
+    const conversationId = await createConversation(text);
+
+    if (!conversationId) {
       sessionStorage.removeItem("pending_first_message");
       sessionStorage.removeItem(PENDING_IMAGE_KEY);
       setIsLoading(false);
+      return;
     }
+
+    router.push(`/chat/${conversationId}`);
   }
 
   const firstName = userName?.split(" ")[0] ?? "there";

@@ -17,32 +17,46 @@ export const getModels = async () => {
   return await groq.models.list();
 };
 
-export const createConversation = async (firstMessage: string): Promise<string> => {
-  const session = await auth();
-  if (!session?.user?.email) throw new Error("Not authenticated");
+export const createConversation = async (firstMessage: string): Promise<string | null> => {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      console.error("[createConversation] No authenticated session");
+      return null;
+    }
 
-  const { data: user } = await supabase
-    .from("users")
-    .select("id")
-    .eq("email", session.user.email)
-    .single();
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", session.user.email)
+      .single();
 
-  if (!user) throw new Error("User not found");
+    if (userError || !user) {
+      console.error("[createConversation] User not found:", userError?.message);
+      return null;
+    }
 
-  const { data: conversation } = await supabase
-    .from("conversations")
-    .insert({
-      user_id: user.id,
-      model: "llama-3.1-8b-instant",
-      title: firstMessage.slice(0, 60),
-    })
-    .select("id")
-    .single();
+    const { data: conversation, error: convError } = await supabase
+      .from("conversations")
+      .insert({
+        user_id: user.id,
+        model: "llama-3.1-8b-instant",
+        title: firstMessage.slice(0, 60),
+      })
+      .select("id")
+      .single();
 
-  if (!conversation) throw new Error("Failed to create conversation");
+    if (convError || !conversation) {
+      console.error("[createConversation] Failed to insert conversation:", convError?.message);
+      return null;
+    }
 
-  revalidatePath("/chat", "layout");
-  return conversation.id;
+    revalidatePath("/chat", "layout");
+    return conversation.id;
+  } catch (err) {
+    console.error("[createConversation] Unexpected error:", err);
+    return null;
+  }
 };
 
 export const getConversations = async () => {
@@ -73,13 +87,17 @@ export const saveMessage = async (
   content: string,
   sequence: number
 ) => {
-  await supabase.from("messages").insert({
+  const { error } = await supabase.from("messages").insert({
     conversation_id: conversationId,
     role,
     content: { text: content },
     token_estimate: Math.ceil(content.length / 4),
     sequence,
   });
+
+  if (error) {
+    console.error("[saveMessage] Failed to save message:", error.message);
+  }
 };
 
 export const getConversation = async (conversationId: string) => {
@@ -121,30 +139,48 @@ export const saveUserPreferences = async ({
   personalInfo: string;
   agentTone: string;
   memos: string[];
-}) => {
-  const session = await auth();
-  if (!session?.user?.email) throw new Error("Not authenticated");
+}): Promise<boolean> => {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      console.error("[saveUserPreferences] No authenticated session");
+      return false;
+    }
 
-  const { data: user } = await supabase
-    .from("users")
-    .select("id")
-    .eq("email", session.user.email)
-    .single();
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", session.user.email)
+      .single();
 
-  if (!user) throw new Error("User not found");
+    if (userError || !user) {
+      console.error("[saveUserPreferences] User not found:", userError?.message);
+      return false;
+    }
 
-  await supabase
-    .from("user_preferences")
-    .upsert(
-      {
-        user_id: user.id,
-        personal_info: personalInfo,
-        agent_tone: agentTone,
-        memos,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" }
-    );
+    const { error: upsertError } = await supabase
+      .from("user_preferences")
+      .upsert(
+        {
+          user_id: user.id,
+          personal_info: personalInfo,
+          agent_tone: agentTone,
+          memos,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+
+    if (upsertError) {
+      console.error("[saveUserPreferences] Upsert failed:", upsertError.message);
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("[saveUserPreferences] Unexpected error:", err);
+    return false;
+  }
 };
 
 export const getConversationMessages = async (conversationId: string) => {
