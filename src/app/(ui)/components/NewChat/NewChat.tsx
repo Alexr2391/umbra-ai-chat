@@ -7,12 +7,15 @@ import { ChatInput } from "@/app/(ui)/components/common/ChatInput/ChatInput";
 import { PLACEHOLDERS } from "@/app/(ui)/components/Chatboard/constants";
 import css from "./NewChat.module.scss";
 
+const PENDING_IMAGE_KEY = "pending_image";
+
 interface NewChatProps {
   userName: string | null | undefined;
 }
 
 export const NewChat = ({ userName }: NewChatProps) => {
   const [value, setValue] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -21,10 +24,16 @@ export const NewChat = ({ userName }: NewChatProps) => {
     if (!text || isLoading) return;
     setIsLoading(true);
     try {
+      sessionStorage.setItem("pending_first_message", text);
+      if (image) {
+        sessionStorage.setItem(PENDING_IMAGE_KEY, image);
+      }
       const conversationId = await createConversation(text);
-      router.push(`/chat/${conversationId}?first=${encodeURIComponent(text)}`);
+      router.push(`/chat/${conversationId}`);
     } catch (err) {
       console.error("Failed to create conversation:", err);
+      sessionStorage.removeItem("pending_first_message");
+      sessionStorage.removeItem(PENDING_IMAGE_KEY);
       setIsLoading(false);
     }
   }
@@ -40,8 +49,11 @@ export const NewChat = ({ userName }: NewChatProps) => {
         onChange={(e) => setValue(e.target.value)}
         onSend={handleSend}
         placeholder={PLACEHOLDERS.NEW_CHAT}
-        isActive={value.trim().length > 0 && !isLoading}
+        isActive={(value.trim().length > 0 || !!image) && !isLoading}
         disabled={isLoading}
+        image={image}
+        onImageAttach={setImage}
+        onImageRemove={() => setImage(null)}
       />
     </div>
   );

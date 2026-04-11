@@ -163,9 +163,14 @@
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: rgba($borderColor, 0.4);
     color: $textColor;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
   }
 }
 

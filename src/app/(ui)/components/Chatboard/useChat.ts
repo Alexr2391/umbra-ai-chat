@@ -11,12 +11,11 @@ export type Message = {
 interface UseChatOptions {
   conversationId: string | null;
   initialMessages?: Message[];
-  firstMessage?: string;
 }
 
 export function useChat(
   messagesEndRef: React.RefObject<HTMLDivElement | null>,
-  { conversationId, initialMessages = [], firstMessage }: UseChatOptions
+  { conversationId, initialMessages = [] }: UseChatOptions
 ) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -133,9 +132,14 @@ export function useChat(
   }
 
   useEffect(() => {
-    if (autoSentRef.current || !firstMessage) return;
+    if (autoSentRef.current) return;
+    const firstMessage = sessionStorage.getItem("pending_first_message");
+    if (!firstMessage) return;
     autoSentRef.current = true;
-    send(firstMessage);
+    sessionStorage.removeItem("pending_first_message");
+    const pendingImage = sessionStorage.getItem("pending_image") ?? undefined;
+    sessionStorage.removeItem("pending_image");
+    send(firstMessage, null, pendingImage);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const lastIsEmpty =

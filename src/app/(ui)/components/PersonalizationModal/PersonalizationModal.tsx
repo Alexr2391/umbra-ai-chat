@@ -110,7 +110,12 @@ export const PersonalizationModal = ({ onClose }: PersonalizationModalProps) => 
                       </button>
                     </div>
                   ))}
-                  <button className={css.addMemoBtn} type="button" onClick={addMemo}>
+                  <button
+                    className={css.addMemoBtn}
+                    type="button"
+                    onClick={addMemo}
+                    disabled={memos.some((m) => m.trim() === "")}
+                  >
                     <BsPlus />
                     Add memo
                   </button>
