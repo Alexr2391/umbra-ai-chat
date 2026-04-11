@@ -16,6 +16,7 @@ interface ChatBoardProps {
 
 export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }: ChatBoardProps) => {
   const [value, setValue] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -26,7 +27,7 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { messages, isStreaming, lastIsEmpty, send } = useChat(messagesEndRef, {
+  const { messages, isStreaming, isProcessingImage, lastIsEmpty, send } = useChat(messagesEndRef, {
     conversationId,
     initialMessages,
     firstMessage,
@@ -35,8 +36,10 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
   function handleSend(inputAnchor: HTMLTextAreaElement | null) {
     const text = value.trim();
     if (!text || isStreaming) return;
+    const currentImage = image;
     setValue("");
-    send(text, inputAnchor);
+    setImage(null);
+    send(text, inputAnchor, currentImage ?? undefined);
   }
 
   return (
@@ -44,6 +47,7 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
       <MessageList
         messages={messages}
         isStreaming={isStreaming}
+        isProcessingImage={isProcessingImage}
         lastIsEmpty={lastIsEmpty}
         messagesEndRef={messagesEndRef}
       />
@@ -54,6 +58,9 @@ export const ChatBoard = ({ conversationId, initialMessages = [], firstMessage }
         placeholder={PLACEHOLDERS.REPLY}
         isActive={value.trim().length > 0 && !isStreaming}
         disabled={isStreaming}
+        image={image}
+        onImageAttach={setImage}
+        onImageRemove={() => setImage(null)}
       />
     </div>
   );

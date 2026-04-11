@@ -5,6 +5,7 @@ import { ROLES } from "@/constants";
 export type Message = {
   role: "user" | "assistant";
   content: string;
+  imageDataUrl?: string; // in-memory only, not persisted
 };
 
 interface UseChatOptions {
@@ -19,6 +20,7 @@ export function useChat(
 ) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const nextSeqRef = useRef(initialMessages.length);
   const autoSentRef = useRef(false);
@@ -85,7 +87,7 @@ export function useChat(
     }
   }
 
-  async function send(text: string, inputAnchor?: HTMLTextAreaElement | null, skipUserSave = false) {
+  async function send(text: string, inputAnchor?: HTMLTextAreaElement | null, imageDataUrl?: string, skipUserSave = false) {
     if (!text.trim() || isStreaming) return;
 
     if (inputAnchor) inputAnchorRef.current = inputAnchor;
@@ -94,7 +96,9 @@ export function useChat(
     const assistantSeq = userSeq + 1;
     nextSeqRef.current = assistantSeq + 1;
 
-    const history = messages.filter((m) => m.content !== "");
+    const history = messages
+      .filter((m) => m.content !== "")
+      .map(({ role, content }) => ({ role, content }));
 
     if (conversationId && !skipUserSave) {
       await saveMessage(conversationId, ROLES.USER, text, userSeq);
@@ -102,11 +106,29 @@ export function useChat(
 
     setMessages((prev) => [
       ...prev,
-      { role: ROLES.USER, content: text },
+      { role: ROLES.USER, content: text, imageDataUrl },
       { role: ROLES.ASSISTANT, content: "" },
     ]);
 
-    await streamFromApi(text, history, assistantSeq);
+    let prompt = text;
+    if (imageDataUrl) {
+      setIsProcessingImage(true);
+      try {
+        const res = await fetch("/api/vision", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageDataUrl }),
+        });
+        if (res.ok) {
+          const { summary } = await res.json();
+          prompt = `[Image attached — Analysis: ${summary}]\n\n${text}`;
+        }
+      } finally {
+        setIsProcessingImage(false);
+      }
+    }
+
+    await streamFromApi(prompt, history, assistantSeq);
     inputAnchorRef.current?.focus();
   }
 
@@ -121,5 +143,5 @@ export function useChat(
     messages[messages.length - 1].role === ROLES.ASSISTANT &&
     messages[messages.length - 1].content === "";
 
-  return { messages, isStreaming, lastIsEmpty, send };
+  return { messages, isStreaming, isProcessingImage, lastIsEmpty, send };
 }
