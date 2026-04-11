@@ -1,7 +1,7 @@
 import { logout } from "@/app/actions";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { RiLogoutBoxRLine } from "react-icons/ri";
+import { RiLogoutBoxRLine, RiUserSettingsLine } from "react-icons/ri";
 import { NavItem } from "../common/NavItem/NavItem";
 import css from "./AccountSetttingsModal.module.scss";
 
@@ -9,12 +9,14 @@ interface AccountSettingsModalProps {
   anchor: HTMLDivElement;
   userEmail: string | null | undefined;
   onClose: () => void;
+  onPersonalizeClick: () => void;
 }
 
 export const AccountSettingsModal = ({
   anchor,
   userEmail,
   onClose,
+  onPersonalizeClick,
 }: AccountSettingsModalProps) => {
   const rect = anchor.getBoundingClientRect();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,8 +47,13 @@ export const AccountSettingsModal = ({
       <div className={css.userEmail}>{userEmail}</div>
       <li className={css.list}>
         <NavItem
+          icon={<RiUserSettingsLine />}
+          label="Personalize"
+          onClick={onPersonalizeClick}
+        />
+        <NavItem
           icon={<RiLogoutBoxRLine />}
-          label={"Log out"}
+          label="Log out"
           onClick={logout}
         />
       </li>

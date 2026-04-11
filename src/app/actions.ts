@@ -92,6 +92,61 @@ export const getConversation = async (conversationId: string) => {
   return data ?? null;
 };
 
+export const getUserPreferences = async () => {
+  const session = await auth();
+  if (!session?.user?.email) return null;
+
+  const { data: user } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", session.user.email)
+    .single();
+
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("user_preferences")
+    .select("personal_info, agent_tone, memos")
+    .eq("user_id", user.id)
+    .single();
+
+  return data ?? { personal_info: "", agent_tone: "", memos: [] as string[] };
+};
+
+export const saveUserPreferences = async ({
+  personalInfo,
+  agentTone,
+  memos,
+}: {
+  personalInfo: string;
+  agentTone: string;
+  memos: string[];
+}) => {
+  const session = await auth();
+  if (!session?.user?.email) throw new Error("Not authenticated");
+
+  const { data: user } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", session.user.email)
+    .single();
+
+  if (!user) throw new Error("User not found");
+
+  await supabase
+    .from("user_preferences")
+    .upsert(
+      {
+        user_id: user.id,
+        personal_info: personalInfo,
+        agent_tone: agentTone,
+        memos,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" }
+    );
+};
+
 export const getConversationMessages = async (conversationId: string) => {
   const { data } = await supabase
     .from("messages")
