@@ -4,16 +4,20 @@ import { signIn, signOut, auth } from "@/auth";
 import { groq } from "@/lib/groq";
 import { supabase } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { MODEL } from "@/constants";
+import { sanitizePreferences } from "@/utils/sanitize";
+import type { Conversation, ChatMessage, UserPreferences } from "@/types";
+import type { ModelListResponse } from "groq-sdk/resources";
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(): Promise<void> {
   await signIn("google", { redirectTo: "/chat" });
 }
 
-export async function logout() {
+export async function logout(): Promise<void> {
   await signOut({ redirectTo: "/" });
 }
 
-export const getModels = async () => {
+export const getModels = async (): Promise<ModelListResponse> => {
   return await groq.models.list();
 };
 
@@ -40,7 +44,7 @@ export const createConversation = async (firstMessage: string): Promise<string |
       .from("conversations")
       .insert({
         user_id: user.id,
-        model: "llama-3.1-8b-instant",
+        model: MODEL,
         title: firstMessage.slice(0, 60),
       })
       .select("id")
@@ -59,7 +63,7 @@ export const createConversation = async (firstMessage: string): Promise<string |
   }
 };
 
-export const getConversations = async () => {
+export const getConversations = async (): Promise<Conversation[]> => {
   const session = await auth();
   if (!session?.user?.email) return [];
 
@@ -86,7 +90,7 @@ export const saveMessage = async (
   role: "user" | "assistant",
   content: string,
   sequence: number
-) => {
+): Promise<void> => {
   const { error } = await supabase.from("messages").insert({
     conversation_id: conversationId,
     role,
@@ -100,17 +104,29 @@ export const saveMessage = async (
   }
 };
 
-export const getConversation = async (conversationId: string) => {
+export const getConversation = async (conversationId: string): Promise<{ id: string } | null> => {
+  const session = await auth();
+  if (!session?.user?.email) return null;
+
+  const { data: user } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", session.user.email)
+    .single();
+
+  if (!user) return null;
+
   const { data } = await supabase
     .from("conversations")
     .select("id")
     .eq("id", conversationId)
+    .eq("user_id", user.id)
     .single();
 
   return data ?? null;
 };
 
-export const getUserPreferences = async () => {
+export const getUserPreferences = async (): Promise<UserPreferences | null> => {
   const session = await auth();
   if (!session?.user?.email) return null;
 
@@ -158,14 +174,16 @@ export const saveUserPreferences = async ({
       return false;
     }
 
+    const sanitized = sanitizePreferences({ personalInfo, agentTone, memos });
+
     const { error: upsertError } = await supabase
       .from("user_preferences")
       .upsert(
         {
           user_id: user.id,
-          personal_info: personalInfo,
-          agent_tone: agentTone,
-          memos,
+          personal_info: sanitized.personalInfo,
+          agent_tone: sanitized.agentTone,
+          memos: sanitized.memos,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "user_id" }
@@ -183,7 +201,7 @@ export const saveUserPreferences = async ({
   }
 };
 
-export const getConversationMessages = async (conversationId: string) => {
+export const getConversationMessages = async (conversationId: string): Promise<ChatMessage[]> => {
   const { data } = await supabase
     .from("messages")
     .select("role, content, sequence")

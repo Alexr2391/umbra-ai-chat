@@ -4,24 +4,19 @@ import classNames from "classnames";
 import type { DefaultSession } from "next-auth";
 import { useState } from "react";
 import { RxPanelLeft } from "react-icons/rx";
+import { useConversations } from "@/app/(ui)/context/ConversationsContext";
 import { AccountSettingsModal } from "../AccountSettingsModal/AccountSettingsModal";
 import { PersonalizationModal } from "../PersonalizationModal/PersonalizationModal";
 import { NavList } from "./components/NavList/Navlist";
 import { UserButton } from "./components/NavList/UserButton/UserButton";
 import css from "./SideNav.module.scss";
 
-interface Conversation {
-  id: string;
-  title: string;
-  updated_at: string;
-}
-
 interface SideNavProps {
   sessionData: DefaultSession["user"];
-  conversations: Conversation[];
 }
 
-export const SideNav = ({ sessionData, conversations }: SideNavProps) => {
+export const SideNav = ({ sessionData }: SideNavProps) => {
+  const { conversations } = useConversations();
   const [collapsed, setCollapsed] = useState(false);
   const [openAccSettings, setOpenAccSettings] = useState<boolean>(false);
   const [openPersonalization, setOpenPersonalization] = useState(false);

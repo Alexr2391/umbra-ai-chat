@@ -23,7 +23,7 @@ export const MessageList = ({
   messagesEndRef,
 }: MessageListProps) => {
   return (
-    <div className={css.messages}>
+    <div role="log" aria-live="polite" aria-label="Chat messages" className={css.messages}>
       {messages.map((msg, i) => (
         <div key={i} className={css.message}>
           <div className={css[msg.role]}>

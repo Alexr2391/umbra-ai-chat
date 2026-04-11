@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { ChatInput } from "@/app/(ui)/components/common/ChatInput/ChatInput";
-import { PLACEHOLDERS } from "./constants";
+import { PLACEHOLDERS } from "@/constants";
 import { MessageList } from "./MessageList";
 import { useChat } from "./useChat";
 import css from "./ChatBoard.module.scss";
@@ -17,7 +17,7 @@ export const ChatBoard = ({ conversationId, initialMessages = [] }: ChatBoardPro
   const [image, setImage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, isStreaming, isProcessingImage, lastIsEmpty, send } = useChat(messagesEndRef, {
+  const { messages, isStreaming, isProcessingImage, lastIsEmpty, error, send } = useChat(messagesEndRef, {
     conversationId,
     initialMessages,
   });
@@ -40,6 +40,9 @@ export const ChatBoard = ({ conversationId, initialMessages = [] }: ChatBoardPro
         lastIsEmpty={lastIsEmpty}
         messagesEndRef={messagesEndRef}
       />
+      {error && (
+        <p className={css.errorBanner}>{error}</p>
+      )}
       <ChatInput
         value={value}
         onChange={(e) => setValue(e.target.value)}

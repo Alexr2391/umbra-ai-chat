@@ -15,6 +15,7 @@ describe("MessageList", () => {
       <MessageList
         messages={[{ role: "user", content: "Hello there" }]}
         isStreaming={false}
+        isProcessingImage={false}
         lastIsEmpty={false}
         messagesEndRef={messagesEndRef}
       />
@@ -27,6 +28,7 @@ describe("MessageList", () => {
       <MessageList
         messages={[{ role: "assistant", content: "**Bold response**" }]}
         isStreaming={false}
+        isProcessingImage={false}
         lastIsEmpty={false}
         messagesEndRef={messagesEndRef}
       />
@@ -42,6 +44,7 @@ describe("MessageList", () => {
           { role: "assistant", content: "" },
         ]}
         isStreaming={true}
+        isProcessingImage={false}
         lastIsEmpty={true}
         messagesEndRef={messagesEndRef}
       />
@@ -54,6 +57,7 @@ describe("MessageList", () => {
       <MessageList
         messages={[{ role: "assistant", content: "All done" }]}
         isStreaming={false}
+        isProcessingImage={false}
         lastIsEmpty={false}
         messagesEndRef={messagesEndRef}
       />
@@ -66,6 +70,7 @@ describe("MessageList", () => {
       <MessageList
         messages={[{ role: "assistant", content: "Partial..." }]}
         isStreaming={true}
+        isProcessingImage={false}
         lastIsEmpty={false}
         messagesEndRef={messagesEndRef}
       />
@@ -81,6 +86,7 @@ describe("MessageList", () => {
           { role: "assistant", content: "Message two" },
         ]}
         isStreaming={false}
+        isProcessingImage={false}
         lastIsEmpty={false}
         messagesEndRef={messagesEndRef}
       />

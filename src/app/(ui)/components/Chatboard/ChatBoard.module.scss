@@ -136,6 +136,17 @@
   border: 1px solid rgba($borderColor, 0.15);
 }
 
+.errorBanner {
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(#c0392b, 0.12);
+  border: 1px solid rgba(#c0392b, 0.25);
+  @include font(0.875rem, normal, null, 1.5, rgba($textColor, 0.85));
+}
+
 .thinking {
   max-width: 760px;
   width: 100%;

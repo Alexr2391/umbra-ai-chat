@@ -1,16 +1,6 @@
 import { groq } from "@/lib/groq";
 import type { NextRequest } from "next/server";
-
-const VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
-
-const EXTRACTION_PROMPT = `Analyze this image in detail. Extract and describe:
-- All text visible in the image, reproduced verbatim
-- Visual layout, structure, and design elements
-- Colors, shapes, and spatial relationships
-- Any charts, graphs, diagrams, tables, or data visualizations
-- The likely purpose or context of the image
-
-Be comprehensive and precise — this description will serve as the sole text reference for follow-up questions about this image.`;
+import { VISION_MODEL, EXTRACTION_PROMPT } from "@/constants";
 
 export async function POST(req: NextRequest) {
   try {

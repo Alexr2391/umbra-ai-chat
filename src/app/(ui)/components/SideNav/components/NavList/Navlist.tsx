@@ -4,14 +4,9 @@ import classNames from "classnames";
 import { usePathname } from "next/navigation";
 import { BsFillPlusCircleFill, BsSearch } from "react-icons/bs";
 import { PiChatsCircle } from "react-icons/pi";
+import type { Conversation } from "@/types";
 import { NavItem } from "../../../common/NavItem/NavItem";
 import css from "./Navlist.module.scss";
-
-interface Conversation {
-  id: string;
-  title: string;
-  updated_at: string;
-}
 
 interface NavListProps {
   collapsed: boolean;
