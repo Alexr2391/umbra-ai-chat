@@ -1,12 +1,10 @@
 "use client";
 
-import { HINTS } from "@/app/(ui)/components/Chatboard/constants";
+import { HINTS, MAX_IMAGE_BYTES } from "@/constants";
 import { useEffect, useRef, useState } from "react";
 import { BsArrowUp, BsPaperclip, BsX } from "react-icons/bs";
 import Image from "next/image";
 import css from "./ChatInput.module.scss";
-
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 interface ChatInputProps {
   value: string;

@@ -73,6 +73,7 @@ export const PersonalizationModal = ({ onClose }: PersonalizationModalProps) => 
                   onChange={(e) => setPersonalInfo(e.target.value)}
                   placeholder="e.g. I'm a software engineer who works with Python and React..."
                   rows={3}
+                  maxLength={2000}
                 />
               </div>
 
@@ -85,6 +86,7 @@ export const PersonalizationModal = ({ onClose }: PersonalizationModalProps) => 
                   onChange={(e) => setAgentTone(e.target.value)}
                   placeholder="e.g. Be more concise. Prefer code examples over explanations..."
                   rows={3}
+                  maxLength={1000}
                 />
               </div>
 
@@ -99,6 +101,7 @@ export const PersonalizationModal = ({ onClose }: PersonalizationModalProps) => 
                         value={memo}
                         onChange={(e) => updateMemo(i, e.target.value)}
                         placeholder="e.g. My timezone is UTC+2"
+                        maxLength={500}
                       />
                       <button
                         className={css.removeMemoBtn}

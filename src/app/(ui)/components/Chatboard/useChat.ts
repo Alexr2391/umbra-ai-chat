@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { saveMessage } from "@/app/actions";
-import { ROLES } from "@/constants";
+import { ROLES, SESSION_KEYS } from "@/constants";
+import type { ChatMessage } from "@/types";
 
-export type Message = {
-  role: "user" | "assistant";
-  content: string;
+export interface Message extends ChatMessage {
   imageDataUrl?: string; // in-memory only, not persisted
-};
+}
 
 interface UseChatOptions {
   conversationId: string | null;
@@ -20,6 +19,7 @@ export function useChat(
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const nextSeqRef = useRef(initialMessages.length);
   const autoSentRef = useRef(false);
@@ -39,6 +39,10 @@ export function useChat(
       });
 
       if (!res.ok || !res.body) {
+        const message = res.status === 401
+          ? "Session expired. Please sign in again."
+          : "Something went wrong. Please try again.";
+        setError(message);
         console.error("Stream failed:", res.status);
         return;
       }
@@ -77,6 +81,7 @@ export function useChat(
     } catch (err) {
       if ((err as Error).name !== "AbortError") {
         console.error("Streaming error:", err);
+        setError("Something went wrong. Please try again.");
       }
     } finally {
       if (conversationId && fullResponse) {
@@ -88,6 +93,7 @@ export function useChat(
 
   async function send(text: string, inputAnchor?: HTMLTextAreaElement | null, imageDataUrl?: string, skipUserSave = false) {
     if (!text.trim() || isStreaming) return;
+    setError(null);
 
     if (inputAnchor) inputAnchorRef.current = inputAnchor;
 
@@ -128,17 +134,22 @@ export function useChat(
     }
 
     await streamFromApi(prompt, history, assistantSeq);
-    inputAnchorRef.current?.focus();
   }
 
   useEffect(() => {
+    if (!isStreaming && inputAnchorRef.current) {
+      inputAnchorRef.current.focus();
+    }
+  }, [isStreaming]);
+
+  useEffect(() => {
     if (autoSentRef.current) return;
-    const firstMessage = sessionStorage.getItem("pending_first_message");
+    const firstMessage = sessionStorage.getItem(SESSION_KEYS.PENDING_FIRST_MESSAGE);
     if (!firstMessage) return;
     autoSentRef.current = true;
-    sessionStorage.removeItem("pending_first_message");
-    const pendingImage = sessionStorage.getItem("pending_image") ?? undefined;
-    sessionStorage.removeItem("pending_image");
+    sessionStorage.removeItem(SESSION_KEYS.PENDING_FIRST_MESSAGE);
+    const pendingImage = sessionStorage.getItem(SESSION_KEYS.PENDING_IMAGE) ?? undefined;
+    sessionStorage.removeItem(SESSION_KEYS.PENDING_IMAGE);
     send(firstMessage, null, pendingImage);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -147,5 +158,5 @@ export function useChat(
     messages[messages.length - 1].role === ROLES.ASSISTANT &&
     messages[messages.length - 1].content === "";
 
-  return { messages, isStreaming, isProcessingImage, lastIsEmpty, send };
+  return { messages, isStreaming, isProcessingImage, lastIsEmpty, error, send };
 }
