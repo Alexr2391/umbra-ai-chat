@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { BsFillPlusCircleFill, BsSearch } from "react-icons/bs";
 import { PiChatsCircle } from "react-icons/pi";
 import type { Conversation } from "@/types";
+import { ConversationItem } from "./ConversationItem/ConversationItem";
 import { NavItem } from "../../../common/NavItem/NavItem";
 import css from "./Navlist.module.scss";
 
@@ -50,12 +51,10 @@ export const NavList = ({ collapsed, conversations, onSearchOpen, onConversation
           <p className={css.sectionLabel}>Recent</p>
           <ul className={css.conversationList}>
             {conversations.map((c) => (
-              <NavItem
+              <ConversationItem
                 key={c.id}
-                href={`/chat/${c.id}`}
-                label={c.title}
+                conversation={c}
                 active={pathname === `/chat/${c.id}`}
-                customClassName={css.conversationItem}
                 onClick={onConversationClick}
               />
             ))}
