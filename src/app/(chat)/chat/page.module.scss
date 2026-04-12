@@ -6,10 +6,14 @@
   height: inherit;
   @include flexbox(row, start, center);
   .chatArea{
-    width: 100%; 
+    width: 100%;
     max-width: 1200px;
     padding: 10px;
-    @include  flexbox(row, start, center);
+    @include flexbox(row, start, center);
     height: inherit;
+
+    @media (max-width: $mobileBreakpoint) {
+      padding-top: 58px; // clear floating hamburger button
+    }
   }
 }

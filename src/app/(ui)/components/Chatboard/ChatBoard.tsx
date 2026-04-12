@@ -24,7 +24,7 @@ export const ChatBoard = ({ conversationId, initialMessages = [] }: ChatBoardPro
 
   function handleSend(inputAnchor: HTMLTextAreaElement | null) {
     const text = value.trim();
-    if (!text || isStreaming) return;
+    if ((!text && !image) || isStreaming) return;
     const currentImage = image;
     setValue("");
     setImage(null);
@@ -48,7 +48,7 @@ export const ChatBoard = ({ conversationId, initialMessages = [] }: ChatBoardPro
         onChange={(e) => setValue(e.target.value)}
         onSend={handleSend}
         placeholder={PLACEHOLDERS.REPLY}
-        isActive={value.trim().length > 0 && !isStreaming}
+        isActive={(value.trim().length > 0 || !!image) && !isStreaming}
         disabled={isStreaming}
         image={image}
         onImageAttach={setImage}

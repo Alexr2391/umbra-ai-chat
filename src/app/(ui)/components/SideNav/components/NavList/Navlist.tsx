@@ -11,9 +11,11 @@ import css from "./Navlist.module.scss";
 interface NavListProps {
   collapsed: boolean;
   conversations: Conversation[];
+  onSearchOpen: () => void;
+  onConversationClick?: () => void;
 }
 
-export const NavList = ({ collapsed, conversations }: NavListProps) => {
+export const NavList = ({ collapsed, conversations, onSearchOpen, onConversationClick }: NavListProps) => {
   const pathname = usePathname();
 
   return (
@@ -34,6 +36,7 @@ export const NavList = ({ collapsed, conversations }: NavListProps) => {
           collapse={collapsed}
           icon={<BsSearch className={css.icon} />}
           label="Search"
+          onClick={onSearchOpen}
         />
         <NavItem
           collapse={collapsed}
@@ -53,6 +56,7 @@ export const NavList = ({ collapsed, conversations }: NavListProps) => {
                 label={c.title}
                 active={pathname === `/chat/${c.id}`}
                 customClassName={css.conversationItem}
+                onClick={onConversationClick}
               />
             ))}
           </ul>

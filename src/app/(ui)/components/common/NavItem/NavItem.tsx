@@ -32,7 +32,7 @@ export const NavItem = ({
 
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} onClick={onClick}>
         <div className={css.flexbox}>
           {icon && icon}
           {!collapse && <div className={css.label}>{label}</div>}

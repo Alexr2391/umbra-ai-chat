@@ -92,7 +92,7 @@ export function useChat(
   }
 
   async function send(text: string, inputAnchor?: HTMLTextAreaElement | null, imageDataUrl?: string, skipUserSave = false) {
-    if (!text.trim() || isStreaming) return;
+    if ((!text.trim() && !imageDataUrl) || isStreaming) return;
     setError(null);
 
     if (inputAnchor) inputAnchorRef.current = inputAnchor;
@@ -126,7 +126,11 @@ export function useChat(
         });
         if (res.ok) {
           const { summary } = await res.json();
-          prompt = `[Image attached — Analysis: ${summary}]\n\n${text}`;
+          prompt = text
+            ? `[Image attached — Analysis: ${summary}]\n\n${text}`
+            : `[Image attached — Analysis: ${summary}]`;
+        } else if (!prompt) {
+          prompt = "[Image attached]";
         }
       } finally {
         setIsProcessingImage(false);
