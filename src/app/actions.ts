@@ -201,6 +201,70 @@ export const saveUserPreferences = async ({
   }
 };
 
+export const deleteConversation = async (id: string): Promise<boolean> => {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return false;
+
+    const { data: user } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", session.user.email)
+      .single();
+
+    if (!user) return false;
+
+    const { error } = await supabase
+      .from("conversations")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("[deleteConversation] Failed:", error.message);
+      return false;
+    }
+
+    revalidatePath("/chat", "layout");
+    return true;
+  } catch (err) {
+    console.error("[deleteConversation] Unexpected error:", err);
+    return false;
+  }
+};
+
+export const renameConversation = async (id: string, title: string): Promise<boolean> => {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) return false;
+
+    const { data: user } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", session.user.email)
+      .single();
+
+    if (!user) return false;
+
+    const { error } = await supabase
+      .from("conversations")
+      .update({ title: title.trim().slice(0, 60) })
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("[renameConversation] Failed:", error.message);
+      return false;
+    }
+
+    revalidatePath("/chat", "layout");
+    return true;
+  } catch (err) {
+    console.error("[renameConversation] Unexpected error:", err);
+    return false;
+  }
+};
+
 export const getConversationMessages = async (conversationId: string): Promise<ChatMessage[]> => {
   const { data } = await supabase
     .from("messages")

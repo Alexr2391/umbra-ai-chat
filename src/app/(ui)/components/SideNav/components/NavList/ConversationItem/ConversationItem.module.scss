@@ -1,0 +1,179 @@
+@use "@/styles/index" as *;
+
+.item {
+  @include flexbox(row, center, flex-start, 0);
+  border-radius: 10px;
+  transition: background-color 0.1s ease;
+  position: relative;
+
+  &:hover,
+  &.active {
+    background-color: $hoverDark;
+
+    .dotsBtn {
+      opacity: 1;
+    }
+  }
+}
+
+.link {
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  padding: 10px 0 10px 14px;
+  @include flexbox(row, center);
+}
+
+.label {
+  @include font(0.875rem, normal, null, null, $textColor);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dotsBtn {
+  flex-shrink: 0;
+  opacity: 0;
+  @include center;
+  width: 28px;
+  height: 28px;
+  margin-right: 4px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: rgba($textColorDarker, 0.7);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.1);
+    color: $textColor;
+  }
+}
+
+// --- Popover menu ---
+
+.menu {
+  position: fixed;
+  z-index: 400;
+  background-color: $inputBgColor;
+  border: 1px solid rgba($borderColor, 0.18);
+  border-radius: 10px;
+  padding: 4px;
+  min-width: 140px;
+  @include flexbox(column, stretch, flex-start, 2px);
+  box-shadow: 0 8px 24px rgba(#000, 0.35);
+}
+
+.menuItem {
+  @include flexbox(row, center, flex-start, 8px);
+  padding: 8px 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  @include font(0.875rem, normal, null, null, $textColor);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  text-align: left;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.08);
+  }
+
+  &.danger {
+    color: #e05c5c;
+
+    &:hover {
+      background-color: rgba(#e05c5c, 0.1);
+    }
+  }
+}
+
+.menuIcon {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+
+// --- Rename modal ---
+
+.overlay {
+  @include center;
+  @include position(fixed, 0, 0, 0, 0);
+  background-color: rgba(#000, 0.65);
+  z-index: 400;
+}
+
+.renameModal {
+  @include flexbox(column, stretch, flex-start, 16px);
+  background-color: $inputBgColor;
+  border: 1px solid rgba($borderColor, 0.18);
+  border-radius: 14px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.renameTitle {
+  @include font(0.9375rem, 600, null, null, $textColor);
+}
+
+.renameInput {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: rgba($backgroundMain, 0.6);
+  border: 1px solid rgba($borderColor, 0.15);
+  border-radius: 8px;
+  @include font(0.875rem, normal, null, 1.5, $textColor);
+  caret-color: $textColor;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: rgba($textColorDarker, 0.35);
+  }
+
+  &:focus {
+    border-color: rgba($borderColor, 0.35);
+  }
+}
+
+.renameFooter {
+  @include flexbox(row, center, flex-end, 8px);
+}
+
+.cancelBtn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba($borderColor, 0.2);
+  background: transparent;
+  color: rgba($textColorDarker, 0.7);
+  @include font(0.875rem, normal);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: rgba($borderColor, 0.08);
+    color: $textColor;
+  }
+}
+
+.saveBtn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background-color: $textColor;
+  color: $backgroundMain;
+  @include font(0.875rem, 600);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($textColor, 0.85);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}

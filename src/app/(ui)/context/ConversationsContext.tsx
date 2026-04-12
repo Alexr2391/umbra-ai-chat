@@ -10,6 +10,7 @@ interface ConversationsContextValue {
   addConversation: (conv: Conversation) => void;
   replaceConversation: (tempId: string, real: Conversation) => void;
   removeConversation: (id: string) => void;
+  renameConversation: (id: string, title: string) => void;
 }
 
 const ConversationsContext = createContext<ConversationsContextValue | null>(null);
@@ -35,9 +36,15 @@ export function ConversationsProvider({
     setConversations((prev) => prev.filter((c) => c.id !== id));
   }
 
+  function renameConversation(id: string, title: string) {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, title } : c))
+    );
+  }
+
   return (
     <ConversationsContext.Provider
-      value={{ conversations, addConversation, replaceConversation, removeConversation }}
+      value={{ conversations, addConversation, replaceConversation, removeConversation, renameConversation }}
     >
       {children}
     </ConversationsContext.Provider>
